@@ -29,7 +29,7 @@ class BixiePrintShopCronJobs {
 	private $argv;
 	private static $_DBFOLDER = 'dbdumps';
 	private static $_HTMLFOLDER = 'public_html';
-	private static $_LOGFOLDER = '../public_html/logs/bps_logs';
+	private static $_LOGFOLDER = '../logs/bps_logs';
 
 	public function __construct($argv) {
 		$this->argv = $argv;
@@ -120,6 +120,6 @@ class BixiePrintShopCronJobs {
 			mkdir($logPath, 0755, true);
 		}
 		$logFile = $logPath.DS.'dbdumps_'.$date->format('Y-W').'.log';
-		@file_put_contents($logFile,$message,FILE_APPEND);
+		file_put_contents($logFile,$message,FILE_APPEND);
 	}
 }
