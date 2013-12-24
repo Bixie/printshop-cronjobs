@@ -1,7 +1,7 @@
 <?php
 /**
  *	com_bixprintshop - Online-PrintStore for Joomla
- *  Copyright (C) 2010-2013 Matthijs Alles
+ *	Copyright (C) 2012-2013 Matthijs Alles
  *	Bixie.nl
  *
  */
@@ -16,10 +16,10 @@ switch ($task) {
 	case 'dumpdb':
 		$cronClass = new BixiePrintShopCronJobs($argv);
 		$cronClass->dumpdb();
-	break;
+		break;
 	default:
 		BixiePrintShopCronJobs::log(sprintf('Task %s niet gevonden!'._N_,$task));
-	break;
+		break;
 }
 
 
@@ -80,21 +80,21 @@ class BixiePrintShopCronJobs {
 		}
 		asort($allDates);
 		if (count($allDates) > $maxItems - 1) {
-			foreach ($allDates as $file=>$date) {
+			foreach ($allDates as $file=>$date) { //of iets van array_shift(array_keys($allDates)) ??
 				@unlink($sDumpPath.DS.$file);
-				self::log("$file verwijderd."._N_);
+				self::log("Bestand $file verwijderd."._N_);
 				break;
 			}
 		}
 		$date = new DateTime('NOW',new DateTimeZone('UTC'));
 		$now = $date->format('Ymd-His');
 		$file = $sDumpPath.DS.'dump_'.$now.'.sql.zip';
-		//db-gegevens
-		$webFolder = $basePath.DS.self::$_HTMLFOLDER;
-		if (file_exists($webFolder.DS.'configuration.php')) {
-			require_once $webFolder.DS.'configuration.php';
+		//db-gegevens uit Joomla config
+		if (file_exists($basePath.DS.self::$_HTMLFOLDER.DS.'configuration.php')) {
+			require_once $basePath.DS.self::$_HTMLFOLDER.DS.'configuration.php';
 			$oJConfig = new JConfig();
 			$command = "mysqldump --opt -h {$oJConfig->host} -u {$oJConfig->user} -p{$oJConfig->password} {$oJConfig->db} {$tables} | zip > {$file}";
+			//uitvoeren als command
 			system($command, $retval);
 			if ($retval == 0) {
 				$sLog = $date->format('d-m-Y H:i:s').": Backup succesvol."._N_;
@@ -108,7 +108,6 @@ class BixiePrintShopCronJobs {
 		} else {
 			self::log("Configuratiebestand niet gevonden!"._N_);
 		}
-		die();
 	}
 	
 	public static function log($message) {
