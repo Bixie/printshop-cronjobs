@@ -1,8 +1,8 @@
 <?php
 /**
- *	com_bix_printshop - Online-PrintStore for Joomla and VirtueMart
+ *	com_bixprintshop - Online-PrintStore for Joomla
  *  Copyright (C) 2010-2013 Matthijs Alles
- *	Bixie.org
+ *	Bixie.nl
  *
  */
  
