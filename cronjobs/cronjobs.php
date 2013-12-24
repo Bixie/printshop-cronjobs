@@ -27,6 +27,8 @@ switch ($task) {
 class BixiePrintShopCronJobs {
 
 	private $argv;
+	private $argc;
+	
 	private static $_DBFOLDER = '../dbdumps';
 	private static $_HTMLFOLDER = '../public_html';
 	private static $_LOGFOLDER = '../logs/bps_logs';
