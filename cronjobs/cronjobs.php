@@ -27,8 +27,8 @@ switch ($task) {
 class BixiePrintShopCronJobs {
 
 	private $argv;
-	private static $_DBFOLDER = 'dbdumps';
-	private static $_HTMLFOLDER = 'public_html';
+	private static $_DBFOLDER = '../dbdumps';
+	private static $_HTMLFOLDER = '../public_html';
 	private static $_LOGFOLDER = '../logs/bps_logs';
 
 	public function __construct($argv) {
@@ -56,7 +56,6 @@ class BixiePrintShopCronJobs {
 		//init vars
 		$aArguments = $this->_getArguments(array('-f'=>'folder','-m'=>'max','-t'=>'tablegroup'));
 		$basePath = dirname(__FILE__);
-		$rootPath = str_replace(DS.basename(__DIR__),'',$basePath);
 		$subFolder = isset($aArguments['folder'])? DS.$aArguments['folder']: '';
 		$maxItems = isset($aArguments['max'])?intval($aArguments['max']):14;
 		$tablegroup = !empty($aArguments['tablegroup'])?$aArguments['tablegroup']:'all';
@@ -65,7 +64,7 @@ class BixiePrintShopCronJobs {
 			'all'=>''
 		);
 		$tables = isset($tablegroups[$tablegroup])?$tablegroups[$tablegroup]:'';
-		$sDumpPath = $rootPath.DS.self::$_DBFOLDER.$subFolder;
+		$sDumpPath = $basePath.DS.self::$_DBFOLDER.$subFolder;
 		if (!file_exists($sDumpPath)) {
 			mkdir($sDumpPath, 0755, true);
 		}
@@ -90,9 +89,8 @@ class BixiePrintShopCronJobs {
 		$date = new DateTime('NOW',new DateTimeZone('UTC'));
 		$now = $date->format('Ymd-His');
 		$file = $sDumpPath.DS.'dump_'.$now.'.sql.zip';
-		$logFile = $rootPath.DS.self::$_HTMLFOLDER.DS.'dbdumps_'.$date->format('Y-W').'.log';
 		//db-gegevens
-		$webFolder = $rootPath.DS.self::$_HTMLFOLDER;
+		$webFolder = $basePath.DS.self::$_HTMLFOLDER;
 		if (file_exists($webFolder.DS.'configuration.php')) {
 			require_once $webFolder.DS.'configuration.php';
 			$oJConfig = new JConfig();
