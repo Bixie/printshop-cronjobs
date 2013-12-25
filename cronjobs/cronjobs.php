@@ -98,13 +98,14 @@ class BixiePrintShopCronJobs {
 			$command = "mysqldump --opt -h {$oJConfig->host} -u {$oJConfig->user} -p{$oJConfig->password} {$oJConfig->db} {$tables} | zip > {$file}";
 			//uitvoeren als command
 			system($command, $retval);
-			if ($retval == 0) {
-				$sLog = $date->format('d-m-Y H:i:s').": Backup succesvol."._N_;
-				$sLog .= "$command"._N_;
+			if ($retval == 0 && file_exists($file)) {
+				$sSize = round((filesize($file/1024)),2);
+				$sLog = "$command"._N_;
+				$sLog .= sprintf('%s: Backup succesvol, %sMb.'._N_,$date->format('d-m-Y H:i:s'),$sSize);
 				self::log($sLog,'dbdumps');
 			} else {
-				$sLog = $date->format('d-m-Y H:i:s').": Backup mislukt!."._N_;
-				$sLog .= "$command"._N_;
+				$sLog = "$command"._N_;
+				$sLog .= sprintf('%s: Backup mislukt!'._N_,$date->format('d-m-Y H:i:s'));
 				self::log($sLog,'dbdumps');
 			}
 		} else {
