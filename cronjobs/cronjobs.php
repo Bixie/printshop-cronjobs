@@ -18,7 +18,7 @@ switch ($task) {
 		$cronClass->dumpdb();
 		break;
 	default:
-		BixiePrintShopCronJobs::log(sprintf('Task %s niet gevonden!'._N_,$task));
+		BixiePrintShopCronJobs::log(sprintf('Task %s niet gevonden!'._N_,$task),'dbdumps');
 		break;
 }
 
@@ -84,7 +84,7 @@ class BixiePrintShopCronJobs {
 		if (count($allDates) > $maxItems - 1) {
 			foreach ($allDates as $file=>$date) { //of iets van array_shift(array_keys($allDates)) ??
 				@unlink($sDumpPath.DS.$file);
-				self::log("Bestand $file verwijderd."._N_);
+				self::log("Bestand $file verwijderd."._N_,'dbdumps');
 				break;
 			}
 		}
@@ -101,24 +101,24 @@ class BixiePrintShopCronJobs {
 			if ($retval == 0) {
 				$sLog = $date->format('d-m-Y H:i:s').": Backup succesvol."._N_;
 				$sLog .= "$command"._N_;
-				self::log($sLog);
+				self::log($sLog,'dbdumps');
 			} else {
 				$sLog = $date->format('d-m-Y H:i:s').": Backup mislukt!."._N_;
 				$sLog .= "$command"._N_;
-				self::log($sLog);
+				self::log($sLog,'dbdumps');
 			}
 		} else {
-			self::log("Configuratiebestand niet gevonden!"._N_);
+			self::log("Configuratiebestand niet gevonden!"._N_,'dbdumps');
 		}
 	}
 	
-	public static function log($message) {
+	public static function log($message,$prefix='log') {
 		$date = new DateTime('NOW',new DateTimeZone('UTC'));
 		$logPath = dirname(__FILE__).DS.self::$_LOGFOLDER;
 		if (!file_exists($logPath)) {
 			mkdir($logPath, 0755, true);
 		}
-		$logFile = $logPath.DS.'dbdumps_'.$date->format('Y-W').'.log';
+		$logFile = $logPath.DS.$prefix.'_'.$date->format('Y-W').'.log';
 		file_put_contents($logFile,$message,FILE_APPEND);
 	}
 }
