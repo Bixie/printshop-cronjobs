@@ -99,9 +99,9 @@ class BixiePrintShopCronJobs {
 			//uitvoeren als command
 			system($command, $retval);
 			if ($retval == 0 && file_exists($file)) {
-				$sSize = round((filesize($file/1024)),2);
+				$sSize = round((filesize($file)/(1024*1024)),2);
 				$sLog = "$command"._N_;
-				$sLog .= sprintf('%s: Backup succesvol, %sMb.'._N_,$date->format('d-m-Y H:i:s'),$sSize);
+				$sLog .= sprintf('%s: Backup succesvol, %s Mb.'._N_,$date->format('d-m-Y H:i:s'),$sSize);
 				self::log($sLog,'dbdumps');
 			} else {
 				$sLog = "$command"._N_;
