@@ -62,7 +62,7 @@ class BixiePrintShopCronJobs {
 		$maxItems = isset($aArguments['max'])?intval($aArguments['max']):14;
 		$tablegroup = !empty($aArguments['tablegroup'])?$aArguments['tablegroup']:'all';
 		$tablegroups = array(
-			'freq'=>'dhn2_bps_order dhn2_bps_orderoption dhn2_bps_orderoptionvalues dhn2_bps_besteladres dhn2_bps_bestelling dhn2_users dhn2_user_profiles dhn2_user_usergroup_map',
+			'freq'=>'#__bps_order #__bps_orderoption #__bps_orderoptionvalues #__bps_besteladres #__bps_bestelling #__bps_factuur #__bps_transactielog #__users #__user_profiles #__user_usergroup_map',
 			'all'=>''
 		);
 		$tables = isset($tablegroups[$tablegroup])?$tablegroups[$tablegroup]:'';
@@ -95,6 +95,7 @@ class BixiePrintShopCronJobs {
 		if (file_exists($basePath.DS.self::$_HTMLFOLDER.DS.'configuration.php')) {
 			require_once $basePath.DS.self::$_HTMLFOLDER.DS.'configuration.php';
 			$oJConfig = new JConfig();
+			$tables = str_replace('#_',$oJConfig->dbprefix,$tables);
 			$command = "mysqldump --opt -h {$oJConfig->host} -u {$oJConfig->user} -p{$oJConfig->password} {$oJConfig->db} {$tables} | zip > {$file}";
 			//uitvoeren als command
 			system($command, $retval);
