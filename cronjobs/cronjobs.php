@@ -95,7 +95,7 @@ class BixiePrintShopCronJobs {
 		if (file_exists($basePath.DS.self::$_HTMLFOLDER.DS.'configuration.php')) {
 			require_once $basePath.DS.self::$_HTMLFOLDER.DS.'configuration.php';
 			$oJConfig = new JConfig();
-			$tables = str_replace('#_',$oJConfig->dbprefix,$tables);
+			$tables = str_replace('#__',$oJConfig->dbprefix,$tables);
 			$command = "mysqldump --opt -h {$oJConfig->host} -u {$oJConfig->user} -p{$oJConfig->password} {$oJConfig->db} {$tables} | zip > {$file}";
 			//uitvoeren als command
 			system($command, $retval);
