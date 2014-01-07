@@ -74,7 +74,7 @@ class BixiePrintShopCronJobs {
 		$allDates = array();
 		if ($handle = opendir($sDumpPath)) {
 			while (false !== ($entry = readdir($handle))) {
-				if ($entry != "." && $entry != "..") {
+				if ($entry != "." && $entry != ".." && is_file($sDumpPath.DS.$entry)) {
 					$allDates[$entry] = str_replace(array('dump_','.sql.zip','-'),'',$entry); //houdt datum over
 				}
 			}
