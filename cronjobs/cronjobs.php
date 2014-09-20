@@ -17,6 +17,10 @@ switch ($task) {
 		$cronClass = new BixiePrintShopCronJobs($argv);
 		$cronClass->dumpdb();
 		break;
+	case 'regtask':
+		$cronClass = new BixiePrintShopCronJobs($argv);
+		$cronClass->regtask();
+		break;
 	default:
 		BixiePrintShopCronJobs::log(sprintf('Task %s niet gevonden!'._N_,$task),'dbdumps');
 		break;
@@ -54,6 +58,25 @@ class BixiePrintShopCronJobs {
 		return $aArguments;
 	}
 	
+	public function regtask() {
+		//init vars
+		$aArguments = $this->_getArguments(array('-f'=>'frequency','-w'=>'webroot'));
+		$date = new DateTime('NOW',new DateTimeZone('UTC'));
+
+		if (!empty($aArguments['webroot']) && !empty($aArguments['frequency'])) {
+			$curlurl = $aArguments['webroot'] . '/index.php?option=com_bixprintshop&format=raw&task=cron.regtask&frequency=' . $aArguments['frequency'];
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_URL, $curlurl);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+			$output = curl_exec($ch);
+			curl_close($ch);
+			self::log("Regtask:  ". $date->format('m-d-Y H:i:s -'). $aArguments['frequency'] . _N_ . $curlurl . _N_ . $output . _N_, 'regtask');
+		} else {
+			self::log("Regtask: invalid arguments -f (frequency), -w (webroot) ". $date->format('m-d-Y H:i:s'). _N_ , 'regtask');
+		}
+
+	}
+
 	public function dumpdb() {
 		//init vars
 		$aArguments = $this->_getArguments(array('-f'=>'folder','-m'=>'max','-t'=>'tablegroup'));
@@ -62,6 +85,7 @@ class BixiePrintShopCronJobs {
 		$maxItems = isset($aArguments['max'])?intval($aArguments['max']):14;
 		$tablegroup = !empty($aArguments['tablegroup'])?$aArguments['tablegroup']:'all';
 		$tablegroups = array(
+			'prices'=>'#__bps_prijs #__bps_prijsoption',
 			'freq'=>'#__bps_order #__bps_orderoption #__bps_orderoptionvalues #__bps_besteladres #__bps_bestelling #__bps_factuur #__bps_transactielog #__users #__user_profiles #__user_usergroup_map',
 			'all'=>''
 		);
